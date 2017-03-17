@@ -7,11 +7,18 @@ def get_args(uri):
    if uri == None or uri == b'' :
        return answer
    uri = bytes.decode(uri)
+   uri = urldecode(uri)
    if '?' in uri:
        params = uri.split('?')[1]
        if '=' in uri:
            answer = dict(item.split('=') for item in params.split('&'))
    return answer
+
+def urldecode(s):
+    table = {'%21':'!' ,'%23':'#' ,'%24':'$' ,'%26':'&' ,'%27':"'" ,'%28':'(' ,'%29':')' ,'%2F':'/' ,'%3A':':', '+':' '}
+    for k, v in table.items():
+        s = s.replace(k, v)
+    return s
 
 # Parses the client's request.
 # Returns a dictionary containing pretty much everything
@@ -24,7 +31,7 @@ def parse_request(req):
    line, rest = req.split(b'\n', 1)
    method, uri, http = line.split(b' ')
 
-   Methods = b'GET HEAD POST PUT'
+   Methods = b'GET HEAD POST post PUT'
    if method in Methods:
        r['uri'] = uri
        r['method'] = method
